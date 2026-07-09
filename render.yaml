@@ -18,7 +18,7 @@ services:
   - type: web
     name: specskart-frontend
     env: static
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --legacy-peer-deps && npm run build
     publishDir: dist
     routes:
       # Support React SPA client-side routing (redirects all requests to index.html)
