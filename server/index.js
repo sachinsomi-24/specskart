@@ -36,8 +36,23 @@ app.get('/api/health', (req, res) => {
 // Connect to MongoDB and start server
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log('✅ Connected to MongoDB');
+
+    // Auto-seed if database is empty
+    try {
+      const Product = require('./models/Product');
+      const count = await Product.countDocuments();
+      if (count === 0) {
+        console.log('🌱 Database is empty. Seeding default data...');
+        const { seedDatabaseData } = require('./seed');
+        await seedDatabaseData();
+        console.log('🎉 Auto-seeded products and default users successfully!');
+      }
+    } catch (err) {
+      console.error('❌ Auto-seeding failed:', err.message);
+    }
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });

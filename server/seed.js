@@ -166,4 +166,37 @@ const seedDatabase = async () => {
   }
 };
 
-seedDatabase();
+if (require.main === module) {
+  seedDatabase();
+}
+
+module.exports = {
+  defaultProducts,
+  seedDatabaseData: async () => {
+    await Product.deleteMany({});
+    await User.deleteMany({});
+    await Product.insertMany(defaultProducts);
+
+    const admin = new User({
+      fullname: 'Admin User',
+      email: 'admin@specskart.com',
+      password: 'admin123',
+      avatar: '/static/profile.jpg',
+      banner: '/static/banner.jpg',
+      role: 'ADMIN',
+      dateJoined: Date.now()
+    });
+    await admin.save();
+
+    const user = new User({
+      fullname: 'Test User',
+      email: 'user@specskart.com',
+      password: 'user123',
+      avatar: '/static/profile.jpg',
+      banner: '/static/banner.jpg',
+      role: 'USER',
+      dateJoined: Date.now()
+    });
+    await user.save();
+  }
+};
